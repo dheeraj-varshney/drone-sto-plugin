@@ -67,6 +67,9 @@ jobs:
             gh release create "$TAG" \
               --title "Release $TAG" \
               --notes "Release $TAG" \
+              release/sto-plugin-linux-amd64 \
+              release/sto-plugin-linux-arm64 \
+              release/sto-plugin-darwin-arm64 \
               release/sto-plugin-linux-amd64.zst \
               release/sto-plugin-linux-arm64.zst \
               release/sto-plugin-darwin-arm64.zst
