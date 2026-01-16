@@ -11,11 +11,25 @@ import (
 var stoBinary []byte
 
 func main() {
-	tmp := "/tmp/sto-plugin-embedded"
-	if err := os.WriteFile(tmp, stoBinary, 0755); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+	tmpFile, err := os.CreateTemp("", "sto-plugin-embedded-*")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating temp file: %v\n", err)
 		os.Exit(1)
 	}
+	tmp := tmpFile.Name()
+	defer os.Remove(tmp)
+
+	if _, err := tmpFile.Write(stoBinary); err != nil {
+		tmpFile.Close()
+		fmt.Fprintf(os.Stderr, "Error writing binary: %v\n", err)
+		os.Exit(1)
+	}
+	if err := tmpFile.Chmod(0755); err != nil {
+		tmpFile.Close()
+		fmt.Fprintf(os.Stderr, "Error setting permissions: %v\n", err)
+		os.Exit(1)
+	}
+	tmpFile.Close()
 
 	cmd := exec.Command(tmp, "--run-strategy", "single-container")
 	cmd.Stdout = os.Stdout
