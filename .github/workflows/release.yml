@@ -39,6 +39,9 @@ jobs:
           # Darwin arm64
           cp posix/sto-plugin-darwin-arm64 sto-plugin-binary
           GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags "-s -w" -o release/sto-plugin-darwin-arm64
+          # Windows amd64
+          cp posix/sto-plugin-windows-amd64.exe sto-plugin-binary
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w" -o release/sto-plugin-windows-amd64.exe
 
       - name: Compress with zstd
         run: |
@@ -46,6 +49,7 @@ jobs:
           zstd release/sto-plugin-linux-amd64
           zstd release/sto-plugin-linux-arm64
           zstd release/sto-plugin-darwin-arm64
+          zstd -o release/sto-plugin-windows-amd64.zst release/sto-plugin-windows-amd64.exe
 
       - name: Create releases for all tags
         run: |
@@ -70,9 +74,11 @@ jobs:
               release/sto-plugin-linux-amd64 \
               release/sto-plugin-linux-arm64 \
               release/sto-plugin-darwin-arm64 \
+              release/sto-plugin-windows-amd64.exe \
               release/sto-plugin-linux-amd64.zst \
               release/sto-plugin-linux-arm64.zst \
-              release/sto-plugin-darwin-arm64.zst
+              release/sto-plugin-darwin-arm64.zst \
+              release/sto-plugin-windows-amd64.zst
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
