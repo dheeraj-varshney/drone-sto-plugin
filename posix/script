@@ -45,4 +45,5 @@ if [ ! -f "$dir/$BINARY" ]; then
 fi
 
 # Execute the binary
+export PYTHONDONTWRITEBYTECODE=1
 "$dir/$BINARY" --run-strategy single-container
